@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Posts</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lucida Grande', 'Frutiger', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header styles */
+        .header {
+            background-color: #34704D;
+            color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+        
+        /* Main content styles */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        
+        .page-title {
+            color: #34704D;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Post list styles */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .post-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-title {
+            margin-bottom: 8px;
+        }
+        
+        .post-title a {
+            color: #34704D;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .post-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .post-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: 30px;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .post-card {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header section -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">MyBlog</div>
+        </div>
+    </header>
+    
+    <!-- Main content -->
+    <main class="container">
+        <h1 class="page-title">Blog Posts</h1>
+        
+        <div class="post-list">
+            {% for post in object_list %}
+            <div class="post-card">
+                <h2 class="post-title"><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+                <p class="post-description">{{ post.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>© {% now "Y" %} MyBlog. All rights reserved.</p>
+    </footer>
+</body>
+</html>
