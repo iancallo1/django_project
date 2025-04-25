@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts - MyBlog</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lucida Grande', 'Frutiger', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header styles */
+        .header {
+            background-color: #34704D;
+            color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main content styles */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        
+        .page-title {
+            color: #34704D;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Post list styles */
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .post-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 15px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .post-title {
+            margin-bottom: 8px;
+        }
+        
+        .post-title a {
+            color: #34704D;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .post-title a:hover {
+            text-decoration: underline;
+        }
+        
+        .post-description {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: 30px;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .post-card {
+                padding: 12px;
+            }
+        }
+        
+        /* Pagination styles */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 5px;
+        }
+        
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #34704D;
+        }
+        
+        .pagination a:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pagination .current {
+            background-color: #34704D;
+            color: white;
+            border-color: #34704D;
+        }
+        
+        .pagination .disabled {
+            color: #999;
+            pointer-events: none;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .create-button {
+            background-color: #34704D;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 3px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .create-button:hover {
+            background-color: #2a5a3e;
+        }
+        
+        .post-meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .post-actions {
+            position: relative;
+        }
+        
+        .menu-button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-button:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+            z-index: 100;
+            display: none;
+        }
+        
+        .menu-dropdown.show {
+            display: block;
+        }
+        
+        .menu-item {
+            display: block;
+            padding: 8px 12px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .menu-item:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .menu-item.edit {
+            color: #34704D;
+        }
+        
+        .menu-item.delete {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header section -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo"><a href="{% url 'post_list' %}">MyBlog</a></div>
+            <div class="nav-links">
+                <a href="{% url 'post_list' %}" class="nav-link">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="nav-link">Logout ({{ user.username }})</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main content -->
+    <main class="container">
+        <div class="page-header">
+            <h1 class="page-title">Blog Posts</h1>
+            {% if user.is_authenticated %}
+                <a href="{% url 'post_create' %}" class="create-button">Create New Post</a>
+            {% endif %}
+        </div>
+        
+        <div class="post-list">
+            {% for post in object_list %}
+                <div class="post-card">
+                    <h2 class="post-title"><a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a></h2>
+                    <p class="post-meta">
+                        By {{ post.author }} on {{ post.created_at|date:"F d, Y" }}
+                        {% if user.is_authenticated and user == post.author %}
+                            <div class="post-actions">
+                                <button class="menu-button" onclick="toggleMenu(this)">⋮</button>
+                                <div class="menu-dropdown">
+                                    <a href="{% url 'post_edit' post.pk %}" class="menu-item edit">Edit</a>
+                                    <a href="{% url 'post_delete' post.pk %}" class="menu-item delete">Delete</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </p>
+                    <p class="post-description">{{ post.description }}</p>
+                </div>
+            {% empty %}
+                <p>No posts yet.</p>
+            {% endfor %}
+        </div>
+        
+        {% if is_paginated %}
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; First</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                {% else %}
+                    <span class="disabled">&laquo; First</span>
+                    <span class="disabled">Previous</span>
+                {% endif %}
+                
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                {% else %}
+                    <span class="disabled">Next</span>
+                    <span class="disabled">Last &raquo;</span>
+                {% endif %}
+            </div>
+        {% endif %}
+    </main>
+    
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>© {% now "Y" %} MyBlog. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function toggleMenu(button) {
+            const dropdown = button.nextElementSibling;
+            const isOpen = dropdown.classList.contains('show');
+            
+            // Close all other open menus
+            document.querySelectorAll('.menu-dropdown.show').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.classList.remove('show');
+                }
+            });
+            
+            // Toggle current menu
+            dropdown.classList.toggle('show');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.post-actions')) {
+                document.querySelectorAll('.menu-dropdown.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
