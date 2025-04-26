@@ -341,64 +341,37 @@
         
         <!-- Comments section -->
         <section class="comments-section">
-            <h3 class="comments-title">
-                Comments
-                <span class="comment-count">
-                    {% with comments.count as total_comments %}
-                        ({{ total_comments }} comment{% if total_comments != 1 %}s{% endif %})
-                    {% endwith %}
-                </span>
-            </h3>
+            <h3 class="comments-title">Comments <span class="comment-count">({{ comments|length }})</span></h3>
             
             <div class="comment-list">
-                {% if comments %}
-                    {% for comment in comments %}
-                        <div class="comment">
-                            <div class="comment-header">
-                                <span class="comment-author">{{ comment.author_name }}</span>
-                                <span class="comment-date">{{ comment.created_at|date:"F j, Y, g:i a" }}</span>
-                            </div>
-                            <div class="comment-body">
-                                {{ comment.content|linebreaks }}
-                            </div>
+                {% for comment in comments %}
+                    <div class="comment">
+                        <div class="comment-header">
+                            <span class="comment-author">{{ comment.author_name }}</span>
+                            <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <p class="no-comments">No comments yet. Be the first to share your thoughts!</p>
-                {% endif %}
+                        <div class="comment-body">{{ comment.content }}</div>
+                    </div>
+                {% empty %}
+                    <p>No comments yet.</p>
+                {% endfor %}
             </div>
             
-            <div class="comment-form-container">
-                <h4 class="comment-form-title">Leave a comment</h4>
-                
-                {% if user.is_authenticated %}
-                    <form class="comment-form" method="post" action="{% url 'add_comment' post_id=object.pk %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="content" class="form-label">Comment</label>
-                            <textarea id="content" name="content" class="form-textarea" required></textarea>
-                        </div>
-                        <button type="submit" class="form-submit">Post Comment</button>
-                    </form>
-                {% else %}
-                    <form class="comment-form" method="post" action="{% url 'add_comment' post_id=object.pk %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="author_name" class="form-label">Name</label>
-                            <input type="text" id="author_name" name="author_name" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="author_email" class="form-label">Email (will not be displayed)</label>
-                            <input type="email" id="author_email" name="author_email" class="form-input" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="content" class="form-label">Comment</label>
-                            <textarea id="content" name="content" class="form-textarea" required></textarea>
-                        </div>
-                        <button type="submit" class="form-submit">Post Comment</button>
-                    </form>
-                {% endif %}
-            </div>
+            {% if user.is_authenticated %}
+                <h4 class="comment-form-title">Add a Comment</h4>
+                <form class="comment-form" method="post" action="{% url 'add_comment' post.pk %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label class="form-label" for="content">Comment</label>
+                        <textarea class="form-textarea" id="content" name="content" required></textarea>
+                    </div>
+                    <button type="submit" class="form-submit">Submit Comment</button>
+                </form>
+            {% else %}
+                <div class="login-to-comment">
+                    <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+                </div>
+            {% endif %}
         </section>
     </main>
     

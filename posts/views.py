@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Post, Comment
+from .models import Post, Comment, hash_email
 from .forms import PostForm
 from django.utils import timezone
 
@@ -91,19 +91,14 @@ def add_comment(request, post_id):
                 post=post,
                 author=request.user,
                 author_name=request.user.username,
+                author_email=request.user.email,
                 author_email_hash=hash_email(request.user.email),
                 content=request.POST['content']
             )
+            return redirect('post_detail', pk=post_id)
         else:
-            # Create comment for anonymous user
-            email = request.POST.get('author_email', '')
-            Comment.objects.create(
-                post=post,
-                author_name=request.POST.get('author_name', 'Anonymous'),
-                author_email_hash=hash_email(email) if email else '',
-                content=request.POST['content']
-            )
-        return redirect('post_detail', pk=post_id)
+            # Redirect to login page if user is not authenticated
+            return redirect('login')
     return redirect('post_detail', pk=post_id)
 
 class SignUpView(CreateView):
