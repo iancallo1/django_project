@@ -381,10 +381,22 @@
                         <button type="submit" class="form-submit">Post Comment</button>
                     </form>
                 {% else %}
-                    <div class="login-to-comment">
-                        Please <a href="{% url 'login' %}?next={{ request.path }}">login</a> or 
-                        <a href="{% url 'signup' %}?next={{ request.path }}">sign up</a> to leave a comment.
-                    </div>
+                    <form class="comment-form" method="post" action="{% url 'add_comment' post_id=object.pk %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="author_name" class="form-label">Name</label>
+                            <input type="text" id="author_name" name="author_name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="author_email" class="form-label">Email (will not be displayed)</label>
+                            <input type="email" id="author_email" name="author_email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="content" class="form-label">Comment</label>
+                            <textarea id="content" name="content" class="form-textarea" required></textarea>
+                        </div>
+                        <button type="submit" class="form-submit">Post Comment</button>
+                    </form>
                 {% endif %}
             </div>
         </section>

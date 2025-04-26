@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Post, Comment
 from .forms import PostForm
+from django.utils import timezone
 
 def logout_view(request):
     logout(request)
@@ -15,7 +16,28 @@ class PostListView(ListView):
     model = Post
     template_name = "posts/post_list.html"
     context_object_name = 'posts'
-    paginate_by = 5  # Show 5 posts per page
+    paginate_by = 5  # Default value
+    
+    def get_queryset(self):
+        return Post.objects.all().order_by('-created_at')
+    
+    def get_paginate_by(self, queryset):
+        # Get the per_page value from the request, default to 5 if not specified
+        per_page = self.request.GET.get('per_page', 5)
+        try:
+            per_page = int(per_page)
+            # Ensure per_page is one of the allowed values
+            if per_page not in [5, 10, 20, 50]:
+                per_page = 5
+        except (ValueError, TypeError):
+            per_page = 5
+        return per_page
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add the current per_page value to the context
+        context['per_page'] = self.get_paginate_by(None)
+        return context
 
 class PostDetailView(DetailView):
     model = Post
@@ -30,17 +52,22 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
     template_name = 'posts/post_form.html'
-    success_url = reverse_lazy('post_list')
+    
+    def get_success_url(self):
+        return reverse_lazy('post_list') + '?success=create'
     
     def form_valid(self, form):
         form.instance.author = self.request.user
+        form.instance.created_at = timezone.now()
         return super().form_valid(form)
 
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = 'posts/post_form.html'
-    success_url = reverse_lazy('post_list')
+    
+    def get_success_url(self):
+        return reverse_lazy('post_list') + '?success=update'
     
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
@@ -48,7 +75,9 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'posts/post_confirm_delete.html'
-    success_url = reverse_lazy('post_list')
+    
+    def get_success_url(self):
+        return reverse_lazy('post_list') + '?success=delete'
     
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
@@ -62,15 +91,16 @@ def add_comment(request, post_id):
                 post=post,
                 author=request.user,
                 author_name=request.user.username,
-                author_email=request.user.email,
+                author_email_hash=hash_email(request.user.email),
                 content=request.POST['content']
             )
         else:
             # Create comment for anonymous user
+            email = request.POST.get('author_email', '')
             Comment.objects.create(
                 post=post,
                 author_name=request.POST.get('author_name', 'Anonymous'),
-                author_email=request.POST.get('author_email', ''),
+                author_email_hash=hash_email(email) if email else '',
                 content=request.POST['content']
             )
         return redirect('post_detail', pk=post_id)
