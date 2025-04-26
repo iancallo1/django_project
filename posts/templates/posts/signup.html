@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - MyBlog</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lucida Grande', 'Frutiger', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Header styles */
+        .header {
+            background-color: #34704D;
+            color: white;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: -0.5px;
+        }
+        
+        .logo a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        
+        /* Main content styles */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        
+        .page-title {
+            color: #34704D;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Form styles */
+        .auth-form-container {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 25px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .form-title {
+            color: #34704D;
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #555;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #34704D;
+            box-shadow: 0 0 3px rgba(52, 112, 77, 0.3);
+        }
+        
+        .form-submit {
+            background-color: #34704D;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 3px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+        
+        .form-submit:hover {
+            background-color: #2a5a3e;
+        }
+        
+        .form-error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .form-help {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+        }
+        
+        .form-help a {
+            color: #34704D;
+            text-decoration: none;
+        }
+        
+        .form-help a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: 30px;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            
+            .auth-form-container {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header section -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo"><a href="{% url 'post_list' %}">MyBlog</a></div>
+            <div class="nav-links">
+                <a href="{% url 'post_list' %}" class="nav-link">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="nav-link">Login</a>
+                    <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main content -->
+    <main class="container">
+        <h1 class="page-title">Sign Up</h1>
+        
+        <div class="auth-form-container">
+            <h2 class="form-title">Create a new account</h2>
+            
+            <form class="auth-form" method="post" action="{% url 'signup' %}">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="form-error">
+                        Please correct the errors below.
+                    </div>
+                {% endif %}
+                
+                <div class="form-group">
+                    <label for="id_username" class="form-label">Username</label>
+                    <input type="text" id="id_username" name="username" class="form-input" required>
+                    {% if form.username.errors %}
+                        <div class="form-error">{{ form.username.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_email" class="form-label">Email</label>
+                    <input type="email" id="id_email" name="email" class="form-input" required>
+                    {% if form.email.errors %}
+                        <div class="form-error">{{ form.email.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password1" class="form-label">Password</label>
+                    <input type="password" id="id_password1" name="password1" class="form-input" required>
+                    {% if form.password1.errors %}
+                        <div class="form-error">{{ form.password1.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password2" class="form-label">Confirm Password</label>
+                    <input type="password" id="id_password2" name="password2" class="form-input" required>
+                    {% if form.password2.errors %}
+                        <div class="form-error">{{ form.password2.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <button type="submit" class="form-submit">Sign Up</button>
+            </form>
+            
+            <div class="form-help">
+                Already have an account? <a href="{% url 'login' %}">Sign in</a>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer section -->
+    <footer class="footer">
+        <p>© {% now "Y" %} MyBlog. All rights reserved.</p>
+    </footer>
+</body>
+</html>

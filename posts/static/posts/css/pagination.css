@@ -1,0 +1,59 @@
+/* Pagination styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.pagination a, .pagination span {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #34704D;
+}
+
+.pagination a:hover {
+    background-color: #f5f5f5;
+}
+
+.pagination .current {
+    background-color: #34704D;
+    color: white;
+    border-color: #34704D;
+}
+
+.pagination .disabled {
+    color: #999;
+    pointer-events: none;
+}
+
+.pagination-dropdown {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.pagination-dropdown label {
+    color: #666;
+    font-size: 14px;
+}
+
+.pagination-dropdown select {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background-color: white;
+    color: #34704D;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.pagination-dropdown select:focus {
+    outline: none;
+    border-color: #34704D;
+    box-shadow: 0 0 3px rgba(52, 112, 77, 0.3);
+} 
