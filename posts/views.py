@@ -91,7 +91,6 @@ def add_comment(request, post_id):
                 post=post,
                 author=request.user,
                 author_name=request.user.username,
-                author_email=request.user.email,
                 author_email_hash=hash_email(request.user.email),
                 content=request.POST['content']
             )
