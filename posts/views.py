@@ -38,8 +38,8 @@ class PostListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Add the current per_page value to the context
         context['per_page'] = self.get_paginate_by(None)
+        context['per_page_options'] = [5, 10, 20, 50]
         return context
 
 class PostDetailView(DetailView):

@@ -2,37 +2,70 @@
 <div class="pagination">
     <div class="pagination-links">
         {% if page_obj.has_previous %}
-            <a href="?page=1" class="pagination-link">First</a>
-            <a href="?page={{ page_obj.previous_page_number }}" class="pagination-link">Previous</a>
+            <a href="?page=1{% if per_page %}&per_page={{ per_page }}{% endif %}" class="pagination-link">First</a>
+            <a href="?page={{ page_obj.previous_page_number }}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="pagination-link">Previous</a>
         {% endif %}
 
         {% for num in page_obj.paginator.page_range %}
             {% if page_obj.number == num %}
                 <span class="pagination-link current">{{ num }}</span>
             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <a href="?page={{ num }}" class="pagination-link">{{ num }}</a>
+                <a href="?page={{ num }}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="pagination-link">{{ num }}</a>
             {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
-            <a href="?page={{ page_obj.next_page_number }}" class="pagination-link">Next</a>
-            <a href="?page={{ page_obj.paginator.num_pages }}" class="pagination-link">Last</a>
+            <a href="?page={{ page_obj.next_page_number }}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="pagination-link">Next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}{% if per_page %}&per_page={{ per_page }}{% endif %}" class="pagination-link">Last</a>
         {% endif %}
     </div>
+    <form method="get" id="perPageForm" class="per-page-form">
+        <label for="per_page">Posts per page:</label>
+        <select name="per_page" id="per_page" onchange="document.getElementById('perPageForm').submit();">
+            {% for option in per_page_options %}
+                <option value="{{ option }}" {% if per_page == option %}selected{% endif %}>{{ option }}</option>
+            {% endfor %}
+        </select>
+        {# Preserve other query params except per_page and page #}
+        {% for key, value in request.GET.items %}
+            {% if key != 'per_page' and key != 'page' %}
+                <input type="hidden" name="{{ key }}" value="{{ value }}">
+            {% endif %}
+        {% endfor %}
+    </form>
 </div>
 
 <style>
     .pagination {
         margin-top: 20px;
         display: flex;
-        justify-content: center;
+        align-items: center;
+        position: relative;
+        min-height: 48px;
     }
-    
     .pagination-links {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         display: flex;
         gap: 5px;
     }
-    
+    .per-page-form {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .per-page-form label {
+        font-size: 14px;
+        color: #34704D;
+    }
+    .per-page-form select {
+        padding: 4px 8px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-size: 14px;
+    }
     .pagination-link {
         padding: 5px 10px;
         border: 1px solid #ddd;
@@ -42,11 +75,9 @@
         font-size: 14px;
         transition: all 0.2s;
     }
-    
     .pagination-link:hover {
         background-color: #f5f5f5;
     }
-    
     .pagination-link.current {
         background-color: #34704D;
         color: white;

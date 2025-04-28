@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}MyBlog{% endblock %}</title>
+    <title>{% block title %}InkSpill{% endblock %}</title>
     <style>
         /* Reset and base styles */
         * {
@@ -151,8 +151,18 @@
     <div class="toast-container" id="toastContainer"></div>
     
     <footer class="footer">
-        <p>&copy; {% now "Y" %} MyBlog. All rights reserved.</p>
+        <p>&copy; {% now "Y" %} InkSpill. All rights reserved.</p>
     </footer>
+
+    {% if messages %}
+    <script id="django-messages" type="application/json">
+        [
+        {% for message in messages %}
+            {"message": "{{ message|escapejs }}", "tags": "{{ message.tags }}"}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+        ]
+    </script>
+    {% endif %}
 
     <script>
         function showToast(message, type) {
@@ -179,12 +189,20 @@
             }, 3000);
         }
 
-        // Check for Django messages
-        {% if messages %}
-            {% for message in messages %}
-                showToast('{{ message }}', '{{ message.tags }}');
-            {% endfor %}
-        {% endif %}
+        // Robust Django messages to toast
+        document.addEventListener('DOMContentLoaded', function() {
+            const msgScript = document.getElementById('django-messages');
+            if (msgScript) {
+                try {
+                    const messages = JSON.parse(msgScript.textContent);
+                    messages.forEach(function(msg) {
+                        showToast(msg.message, msg.tags);
+                    });
+                } catch (e) {
+                    // fail silently
+                }
+            }
+        });
 
         // Check URL parameters for success messages
         const urlParams = new URLSearchParams(window.location.search);
