@@ -123,3 +123,6 @@ class CustomLoginView(DjangoLoginView):
         response = super().form_valid(form)
         messages.success(self.request, 'Successfully logged in!', extra_tags='login')
         return response
+
+def custom_404(request, exception):
+    return render(request, 'posts/pages/error-page/404-notfound.html', status=404)

@@ -1,0 +1,116 @@
+{% extends 'posts/layouts/base.html' %}
+
+{% block title %}Page Not Found - InkSpill{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-container {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 30px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+    }
+
+    .error-content {
+        text-align: center;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .error-code {
+        font-size: 48px;
+        font-weight: bold;
+        color: #34704D;
+        margin-bottom: 15px;
+    }
+
+    .error-message {
+        color: #34704D;
+        font-size: 24px;
+        margin-bottom: 20px;
+        line-height: 1.3;
+    }
+
+    .error-description {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 30px;
+        line-height: 1.6;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .error-button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #34704D;
+        color: white;
+        text-decoration: none;
+        border-radius: 3px;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+
+    .error-button:hover {
+        background-color: #2a5a3e;
+        text-decoration: none;
+    }
+
+    .error-button.secondary {
+        background-color: #666;
+    }
+
+    .error-button.secondary:hover {
+        background-color: #555;
+    }
+
+    @media (max-width: 768px) {
+        .error-container {
+            padding: 20px;
+        }
+
+        .error-code {
+            font-size: 36px;
+        }
+
+        .error-message {
+            font-size: 20px;
+        }
+
+        .error-actions {
+            flex-direction: column;
+        }
+
+        .error-button {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="error-container">
+    <div class="error-content">
+        <div class="error-code">404</div>
+        <h1 class="error-message">Page Not Found</h1>
+        <p class="error-description">
+            The page you're looking for doesn't exist or has been moved. 
+            Don't worry though, you can find your way back to the content you're looking for.
+        </p>
+        <div class="error-actions">
+            <a href="{% url 'post_list' %}" class="error-button">Go to Home</a>
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}" class="error-button secondary">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
