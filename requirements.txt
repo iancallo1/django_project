@@ -6,3 +6,4 @@ crispy-bootstrap5==2024.2  # Bootstrap 5 template pack for crispy-forms
 gunicorn==21.2.0  # Production server
 whitenoise==6.6.0  # For serving static files
 dj-database-url==2.1.0  # For database configuration
+psycopg2-binary==2.9.9  # PostgreSQL database adapter
