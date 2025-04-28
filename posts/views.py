@@ -4,17 +4,20 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login, authenticate, logout
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
 from .models import Post, Comment, hash_email
 from .forms import PostForm
 from django.utils import timezone
+from django.contrib.auth.views import LoginView as DjangoLoginView
 
 def logout_view(request):
     logout(request)
+    messages.success(request, 'You have been successfully logged out.', extra_tags='logout')
     return redirect('post_list')
 
 class PostListView(ListView):
     model = Post
-    template_name = "posts/post_list.html"
+    template_name = "posts/pages/index.html"
     context_object_name = 'posts'
     paginate_by = 5  # Default value
     
@@ -41,7 +44,7 @@ class PostListView(ListView):
 
 class PostDetailView(DetailView):
     model = Post
-    template_name = "posts/post_detail.html"
+    template_name = "posts/pages/post/post_detail.html"
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,7 +54,7 @@ class PostDetailView(DetailView):
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
-    template_name = 'posts/post_form.html'
+    template_name = 'posts/pages/post/post_form.html'
     
     def get_success_url(self):
         return reverse_lazy('post_list') + '?success=create'
@@ -64,7 +67,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 class PostUpdateView(LoginRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
-    template_name = 'posts/post_form.html'
+    template_name = 'posts/pages/post/post_form.html'
     
     def get_success_url(self):
         return reverse_lazy('post_list') + '?success=update'
@@ -74,7 +77,7 @@ class PostUpdateView(LoginRequiredMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    template_name = 'posts/post_confirm_delete.html'
+    template_name = 'posts/pages/post/post_confirm_delete.html'
     
     def get_success_url(self):
         return reverse_lazy('post_list') + '?success=delete'
@@ -103,13 +106,20 @@ def add_comment(request, post_id):
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
-    template_name = 'posts/signup.html'
+    template_name = 'posts/pages/authentication/signup.html'
     
     def form_valid(self, form):
         response = super().form_valid(form)
+        messages.success(self.request, 'Account created! Please log in.', extra_tags='success')
         # Log the user in after signing up
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password1')
         user = authenticate(username=username, password=password)
         login(self.request, user)
+        return response
+
+class CustomLoginView(DjangoLoginView):
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Successfully logged in!', extra_tags='login')
         return response

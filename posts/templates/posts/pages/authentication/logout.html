@@ -1,0 +1,38 @@
+{% extends 'posts/layouts/base.html' %}
+
+{% block title %}Logged Out - MyBlog{% endblock %}
+
+{% block content %}
+<div class="logout-container">
+    <h1 class="page-title">Logged Out</h1>
+    <p>You have been successfully logged out.</p>
+    <div class="login-link">
+        <a href="{% url 'login' %}">Login again</a>
+    </div>
+</div>
+
+<style>
+    .logout-container {
+        text-align: center;
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-link {
+        margin-top: 20px;
+    }
+
+    .login-link a {
+        color: #34704D;
+        text-decoration: none;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %} 

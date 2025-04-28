@@ -1,0 +1,221 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MyBlog{% endblock %}</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Lucida Grande', 'Frutiger', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        /* Main content styles */
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        
+        .page-title {
+            color: #34704D;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: 30px;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Toast styles */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            min-width: 300px;
+            animation: slideIn 0.3s ease-out;
+            color: #333;
+            position: relative;
+        }
+
+        .toast::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+        }
+
+        .toast.logout::before,
+        .toast.success.logout::before,
+        .toast.logout.success::before {
+            background-color: #dc3545;
+        }
+
+        .toast.login::before {
+            background-color: #34704D;
+        }
+
+        .toast.success::before {
+            background-color: #28a745;
+        }
+
+        .toast.error::before {
+            background-color: #dc3545;
+        }
+
+        .toast-message {
+            flex-grow: 1;
+            font-weight: 500;
+            padding-left: 10px;
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            margin-left: 10px;
+            opacity: 0.8;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+            color: #333;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            .toast {
+                min-width: auto;
+                width: calc(100% - 40px);
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include 'posts/components/topbar.html' %}
+    
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <footer class="footer">
+        <p>&copy; {% now "Y" %} MyBlog. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function showToast(message, type) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'toast-message';
+            messageDiv.textContent = message;
+            
+            const closeButton = document.createElement('button');
+            closeButton.className = 'toast-close';
+            closeButton.innerHTML = '&times;';
+            closeButton.onclick = () => toast.remove();
+            
+            toast.appendChild(messageDiv);
+            toast.appendChild(closeButton);
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Check for Django messages
+        {% if messages %}
+            {% for message in messages %}
+                showToast('{{ message }}', '{{ message.tags }}');
+            {% endfor %}
+        {% endif %}
+
+        // Check URL parameters for success messages
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        
+        if (success) {
+            let message, type;
+            switch(success) {
+                case 'login':
+                    message = 'Successfully logged in!';
+                    type = 'login';
+                    break;
+                case 'create':
+                    message = 'Post created successfully!';
+                    type = 'success';
+                    break;
+                case 'update':
+                    message = 'Post updated successfully!';
+                    type = 'success';
+                    break;
+                case 'delete':
+                    message = 'Post deleted successfully!';
+                    type = 'error';
+                    break;
+            }
+            if (message) {
+                showToast(message, type);
+            }
+        }
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

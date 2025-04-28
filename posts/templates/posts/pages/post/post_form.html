@@ -1,0 +1,111 @@
+{% extends 'posts/layouts/base.html' %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Create{% endif %} Post - MyBlog{% endblock %}
+
+{% block extra_css %}
+<style>
+    .post-form-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 20px;
+        background-color: white;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-size: 14px;
+    }
+
+    .form-group textarea {
+        min-height: 200px;
+        resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #34704D;
+    }
+
+    .submit-button {
+        background-color: #34704D;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 3px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .submit-button:hover {
+        background-color: #2a5a3e;
+    }
+
+    .cancel-link {
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .cancel-link a {
+        color: #666;
+        text-decoration: none;
+    }
+
+    .cancel-link a:hover {
+        text-decoration: underline;
+    }
+
+    .error-message {
+        color: #e74c3c;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="post-form-container">
+    <h1 class="page-title">{% if form.instance.pk %}Edit{% else %}Create{% endif %} Post</h1>
+    <form method="post" class="post-form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <div class="error-message">
+                        {{ field.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="submit-button">{% if form.instance.pk %}Update{% else %}Create{% endif %} Post</button>
+    </form>
+    <div class="cancel-link">
+        <a href="{% url 'post_list' %}">Cancel</a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,61 @@
+<header class="header">
+    <div class="header-container">
+        <div class="logo">
+            <a href="{% url 'post_list' %}">MyBlog</a>
+        </div>
+        <nav class="nav-links">
+            {% if user.is_authenticated %}
+                <a href="{% url 'post_create' %}" class="nav-link">Create Post</a>
+                <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link">Login</a>
+                <a href="{% url 'signup' %}" class="nav-link">Sign Up</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<style>
+    /* Header styles */
+    .header {
+        background-color: #34704D;
+        color: white;
+        padding: 10px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo {
+        font-size: 24px;
+        font-weight: bold;
+        letter-spacing: -0.5px;
+    }
+    
+    .logo a {
+        color: white;
+        text-decoration: none;
+    }
+    
+    .nav-links {
+        display: flex;
+        gap: 20px;
+    }
+    
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .nav-link:hover {
+        text-decoration: underline;
+    }
+</style> 
