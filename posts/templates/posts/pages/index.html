@@ -1,0 +1,195 @@
+{% extends 'posts/layouts/base.html' %}
+
+{% block title %}Posts - MyBlog{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Post list styles */
+    .post-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .post-card {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 15px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+    }
+    
+    .post-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .post-title {
+        margin-bottom: 8px;
+    }
+    
+    .post-title a {
+        color: #34704D;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .post-title a:hover {
+        text-decoration: underline;
+    }
+    
+    .post-description {
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .create-button {
+        background-color: #34704D;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 3px;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+    
+    .create-button:hover {
+        background-color: #2a5a3e;
+    }
+    
+    .post-meta {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .post-actions {
+        position: relative;
+    }
+    
+    .menu-button {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 4px 8px;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        transition: background-color 0.2s;
+    }
+    
+    .menu-button:hover {
+        background-color: #f5f5f5;
+    }
+    
+    .menu-dropdown {
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        min-width: 120px;
+        z-index: 100;
+        display: none;
+    }
+    
+    .menu-dropdown.show {
+        display: block;
+    }
+    
+    .menu-item {
+        display: block;
+        padding: 8px 12px;
+        color: #333;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background-color 0.2s;
+    }
+    
+    .menu-item:hover {
+        background-color: #f5f5f5;
+    }
+    
+    .menu-item.edit {
+        color: #34704D;
+    }
+    
+    .menu-item.delete {
+        color: #e74c3c;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Posts</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'post_create' %}" class="create-button">Create Post</a>
+    {% endif %}
+</div>
+
+<div class="post-list">
+    {% for post in posts %}
+        <div class="post-card">
+            <div class="post-meta">
+                <span>Posted by {{ post.author.username }} on {{ post.created_at|date:"F j, Y" }}</span>
+                {% if user == post.author %}
+                    <div class="post-actions">
+                        <button class="menu-button" onclick="toggleMenu(this)">⋮</button>
+                        <div class="menu-dropdown">
+                            <a href="{% url 'post_edit' post.pk %}" class="menu-item edit">Edit</a>
+                            <a href="{% url 'post_delete' post.pk %}" class="menu-item delete">Delete</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="post-title">
+                <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+            </div>
+            <div class="post-description">
+                {{ post.content|truncatewords:50 }}
+            </div>
+        </div>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+</div>
+
+{% include 'posts/components/pagination.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function toggleMenu(button) {
+        const dropdown = button.nextElementSibling;
+        dropdown.classList.toggle('show');
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function closeDropdown(e) {
+            if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+                document.removeEventListener('click', closeDropdown);
+            }
+        });
+    }
+</script>
+{% endblock %} 

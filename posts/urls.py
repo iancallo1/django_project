@@ -2,7 +2,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
-from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView
+from .views import PostDetailView, PostListView, PostCreateView, PostUpdateView, PostDeleteView, CustomLoginView
 
 urlpatterns = [
     path("<int:pk>/", PostDetailView.as_view(), name="post_detail"),
@@ -13,7 +13,7 @@ urlpatterns = [
     path('post/<int:pk>/delete/', PostDeleteView.as_view(), name='post_delete'),
 
     # Authentication URLs
-    path('login/', auth_views.LoginView.as_view(template_name='posts/login.html'), name='login'),
+    path('login/', CustomLoginView.as_view(template_name='posts/pages/authentication/login.html'), name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('signup/', views.SignUpView.as_view(), name='signup'),
 ]

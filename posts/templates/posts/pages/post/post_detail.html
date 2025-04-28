@@ -1,0 +1,81 @@
+{% extends 'posts/layouts/base.html' %}
+
+{% block title %}{{ object.title }} - Blog Detail{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Post detail styles */
+    .post-detail {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 25px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+    }
+    
+    .post-title {
+        color: #34704D;
+        font-size: 24px;
+        margin-bottom: 15px;
+        line-height: 1.3;
+    }
+    
+    .post-description {
+        color: #555;
+        font-size: 16px;
+        font-style: italic;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .post-content {
+        font-size: 16px;
+        line-height: 1.7;
+        color: #333;
+    }
+    
+    .post-content p {
+        margin-bottom: 15px;
+    }
+    
+    /* Back button */
+    .back-link {
+        display: inline-block;
+        margin-bottom: 15px;
+        color: #34704D;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .back-link:hover {
+        text-decoration: underline;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .post-detail {
+            padding: 15px;
+        }
+        
+        .post-title {
+            font-size: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Blog Post</h1>
+
+<a href="{% url 'post_list' %}" class="back-link">← Back to all posts</a>
+
+<article class="post-detail">
+    <h2 class="post-title">{{ object.title }}</h2>
+    <p class="post-description">{{ object.description }}</p>
+    <div class="post-content">{{ object.content|linebreaks }}</div>
+</article>
+
+{% include 'posts/pages/post/post_comments.html' %}
+{% endblock %} 

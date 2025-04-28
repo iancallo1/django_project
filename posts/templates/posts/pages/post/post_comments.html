@@ -1,0 +1,192 @@
+{% load static %}
+<!-- Comments section -->
+<section class="comments-section">
+    <h3 class="comments-title">Comments <span class="comment-count">({{ comments|length }})</span></h3>
+    
+    <div class="comment-list">
+        {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-header">
+                    <span class="comment-author">{{ comment.author_name }}</span>
+                    <span class="comment-date">{{ comment.created_at|date:"F d, Y" }}</span>
+                </div>
+                <div class="comment-body">{{ comment.content }}</div>
+            </div>
+        {% empty %}
+            <p class="no-comments">No comments yet.</p>
+        {% endfor %}
+    </div>
+    
+    {% if user.is_authenticated %}
+        <h4 class="comment-form-title">Add a Comment</h4>
+        <form class="comment-form" method="post" action="{% url 'add_comment' post.pk %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label" for="content">Comment</label>
+                <textarea class="form-textarea" id="content" name="content" required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Submit Comment</button>
+        </form>
+    {% else %}
+        <div class="login-to-comment">
+            <p>Please <a href="{% url 'login' %}">log in</a> to leave a comment.</p>
+        </div>
+    {% endif %}
+</section>
+
+<style>
+    /* Comments section styles */
+    .comments-section {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 25px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        margin-bottom: 25px;
+    }
+    
+    .comments-title {
+        color: #34704D;
+        font-size: 18px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .comment-count {
+        color: #777;
+        font-size: 14px;
+        font-weight: normal;
+        margin-left: 5px;
+    }
+    
+    .comment-list {
+        margin-bottom: 30px;
+    }
+    
+    .comment {
+        padding: 15px 0;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .comment:last-child {
+        border-bottom: none;
+    }
+    
+    .comment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    
+    .comment-author {
+        font-weight: bold;
+        color: #34704D;
+    }
+    
+    .comment-date {
+        color: #999;
+        font-size: 12px;
+    }
+    
+    .comment-body {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    /* Comment form styles */
+    .comment-form-title {
+        font-size: 16px;
+        color: #34704D;
+        margin-bottom: 15px;
+    }
+    
+    .comment-form {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        color: #555;
+    }
+    
+    .form-textarea {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        font-family: inherit;
+        font-size: 14px;
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .form-textarea:focus {
+        outline: none;
+        border-color: #34704D;
+        box-shadow: 0 0 3px rgba(52, 112, 77, 0.3);
+    }
+    
+    .form-submit {
+        align-self: flex-start;
+        background-color: #34704D;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 3px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .form-submit:hover {
+        background-color: #2a5a3e;
+    }
+    
+    .login-to-comment {
+        text-align: center;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 3px;
+        margin-bottom: 20px;
+    }
+    
+    .login-to-comment a {
+        color: #34704D;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    .login-to-comment a:hover {
+        text-decoration: underline;
+    }
+    
+    .no-comments {
+        color: #777;
+        font-style: italic;
+        text-align: center;
+        padding: 20px 0;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .comments-section {
+            padding: 15px;
+        }
+        
+        .comment-header {
+            flex-direction: column;
+        }
+        
+        .comment-date {
+            margin-top: 3px;
+        }
+    }
+</style> 
